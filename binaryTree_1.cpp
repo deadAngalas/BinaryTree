@@ -51,10 +51,43 @@ Node *CreateNode()
 
 void PrintTree(Node *cur)
 {
+  // LVR (left vertex right)
   if(!cur) return;
   PrintTree(cur->left); // output left
-  cout << cur->data;
+  cout << cur->data << " ";
   PrintTree(cur->right);
+}
+
+Node *AddNode(Node *root)
+{
+  //create node
+  Node *newNode, *cur;
+  newNode = CreateNode();
+
+  //loop
+  cur = root;
+
+  while(cur->left != NULL && cur->right != NULL) // big loop
+  {
+    while(newNode->data < cur->data || cur->left != NULL) // for left branch
+    {
+      cur = cur->left;
+    }
+    while(newNode->data >= cur->data || cur->right != NULL) // for right branch
+    {
+      cur = cur->right;
+    }
+  }
+  // add node in the tree
+  if(newNode->data < cur->data && cur->left == NULL) // cur->left == NULL
+  {
+    cur->left = newNode;
+  }
+  else if(newNode->data >= cur->data && cur->right == NULL) // cur->right == NULL
+  {
+    cur->right = newNode;
+  }
+  return 0;
 }
 
 int main()
@@ -137,7 +170,6 @@ int main()
             AddNode(root);
           }
           else cout << "Tree does not exists!\n";
-          system("pause>nul");
           break;
         }
         case num5:
