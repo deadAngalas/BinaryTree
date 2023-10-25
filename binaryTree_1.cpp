@@ -55,7 +55,7 @@ void PrintTree(Node *cur)
   if(!cur) return;
   PrintTree(cur->left); // output left
   cout << cur->data << " ";
-  PrintTree(cur->right);
+  PrintTree(cur->right); // output right
 }
 
 Node *AddNode(Node *root)
@@ -64,29 +64,36 @@ Node *AddNode(Node *root)
   Node *newNode, *cur;
   newNode = CreateNode();
 
-  //loop
   cur = root;
 
-  while(cur->left != NULL && cur->right != NULL) // big loop
+  // for left loop
+  if(newNode->data < cur->data)
   {
-    while(newNode->data < cur->data || cur->left != NULL) // for left branch
+    while(newNode->data < cur->data && cur->left != NULL) // work until new data is smaller than current data && current left child is something
     {
-      cur = cur->left;
+      cur = cur->left; // go under left child
     }
-    while(newNode->data >= cur->data || cur->right != NULL) // for right branch
+    // when loop is gone, it means that it is last child and under is nothing -> new if, which again compare datas values to decide which side to add new value
+    if(newNode->data >= cur->data) // if new data value is larger or equivallent -> needs to add in right child
     {
-      cur = cur->right;
+      cur->right = newNode;
     }
+    else cur->left = newNode; // if smaller than in left child
   }
-  // add node in the tree
-  if(newNode->data < cur->data && cur->left == NULL) // cur->left == NULL
+  // for right loop
+  else if(newNode->data >= cur->data)
   {
-    cur->left = newNode;
+    while(newNode->data >= cur->data && cur->right != NULL)
+    {
+      cur = cur->right; // go under right child
+    }
+    if(newNode->data < cur->data) // if new data value is smaller -> needs to add in left child
+    {
+      cur->left = newNode;
+    }
+    else cur->right = newNode; // if larger than in right child
   }
-  else if(newNode->data >= cur->data && cur->right == NULL) // cur->right == NULL
-  {
-    cur->right = newNode;
-  }
+
   return 0;
 }
 
