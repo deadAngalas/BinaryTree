@@ -167,10 +167,11 @@ int NodesCount(Node *cur)
 int main()
 {
   Node *root = NULL;
-  enum KEYS { num1 = 49, num2 = 50, num3 = 51 , num4 = 52, num5 = 53, num6 = 54, num7 = 55, num8 = 56, num9 = 57, num10 = 45, num11 = 61 };
+  enum KEYS { num1 = 49, num2 = 50, num3 = 51 , num4 = 52, num5 = 53, num6 = 54, num7 = 55, num8 = 56, num9 = 57, num10 = 45, num11 = 61, num12 = 112 };
   /*
   num10 = 45; it is   -
   num11 = 61; it is   =
+  num12 = 112; it is  p
   */
   int choice;
 
@@ -198,10 +199,11 @@ int main()
       cout << "8. Find Node\n";
       cout << "\n-------------- REMOVE --------------\n";
       cout << "9. Remove Node\n";
-      cout << "\n-------------- COUNT ---------------\n";
+      cout << "\n--------- COUNT & TURNING ----------\n";
       cout << "10. Count How many Nodes (-)\n";
+      cout << "11. Tree Turning (=)\n";
       cout << "\n-------------- STOP --------------\n";
-      cout << "11. Stop Program (=)\n\n";
+      cout << "12. Stop Program (p)\n\n";
       cout << "-----------------------------------\n\n";
 
       choice = getch();
@@ -308,13 +310,19 @@ int main()
           system("pause>nul");
           break;
         }
-        case num11:
+        case num11: // turning
+        {
+
+          system("pause>nul");
+          break;
+        }
+        case num12:
         {
           cout << "\nProgram is stopped! Goodbye!"; ProgEnd(); break;
         }
         default: cout << "Incorrect input!\n";
       }
-    } while(choice != num11);
+    } while(choice != num12);
 
   system("pause>nul");
   return 0;
