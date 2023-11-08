@@ -49,13 +49,38 @@ Node *CreateNode()
   return newNode;
 }
 
-void PrintTree(Node *cur)
+// preorder; VLR
+// inorder; LVR
+// postorder; LRV
+
+void PreOrder(Node *p) // VLR
 {
-  // LVR (left vertex right)
-  if(!cur) return;
-  PrintTree(cur->left); // output left
-  cout << cur->data << " ";
-  PrintTree(cur->right); // output right
+  if(p != NULL)
+  {
+    cout << p->data << " ";
+    PreOrder(p->left);
+    PreOrder(p->right);
+  }
+}
+
+void InOrder(Node *p) // LVR
+{
+  if(p != NULL)
+  {
+    InOrder(p->left);
+    cout << p->data << " ";
+    InOrder(p->right);
+  }
+}
+
+void PostOrder(Node *p) // LRV
+{
+  if(p != NULL)
+  {
+    PostOrder(p->left);
+    PostOrder(p->right);
+    cout << p->data << " ";
+  }
 }
 
 Node *AddNode(Node *root)
@@ -66,6 +91,28 @@ Node *AddNode(Node *root)
 
   cur = root;
 
+  while((cur->data > newNode->data && cur->left != NULL) || (cur->data <= newNode->data && cur->right != NULL))
+  {
+    while(cur->data > newNode->data && cur->left != NULL)
+    {
+      cur = cur->left;
+    }
+    while(cur->data <= newNode->data && cur->right != NULL)
+    {
+      cur = cur->right;
+    }
+  }
+
+  if(cur->data > newNode->data && cur->left == NULL)
+  {
+    cur->left = newNode;
+  }
+  if(cur->data <= newNode->data && cur->right == NULL)
+  {
+    cur->right = newNode;
+  }
+
+/*
   // for left loop
   if(newNode->data < cur->data)
   {
@@ -83,17 +130,20 @@ Node *AddNode(Node *root)
   // for right loop
   else if(newNode->data >= cur->data)
   {
-    while(newNode->data >= cur->data && cur->right != NULL)
+    if(newNode->data >= cur->data)
     {
-      cur = cur->right; // go under right child
+      while(newNode->data >= cur->data && cur->right != NULL)
+      {
+        cur = cur->right; // go under right child
+      }
+      if(newNode->data < cur->data) // if new data value is smaller -> needs to add in left child
+      {
+        cur->left = newNode;
+      }
+      else cur->right = newNode; // if larger than in right child
     }
-    if(newNode->data < cur->data) // if new data value is smaller -> needs to add in left child
-    {
-      cur->left = newNode;
-    }
-    else cur->right = newNode; // if larger than in right child
   }
-
+*/
   return 0;
 }
 
@@ -112,20 +162,24 @@ int main()
 
   system("cls");
   cout << "\n\t\tBinary Search Tree\n\n";
-  cout << "\n Author: Vladislav Ryazancev\n Ver: 1.2.7\n Date (start): 18.10.2023 / 14:28\n Date (end): 11.10.2023 / 16:13\n\n";
+  cout << "\n Author: Vladislav Ryazancev\n Ver: 1.2.7\n Date (start): 18.10.2023 / 14:28\n Date (end): xx.11.2023 / 16:13\n\n";
 
   do
     {
       system("pause>nul");
       system("cls");
 
-      cout << "\n What do you want to do: \n\n";
-      cout << "1. Create root\n";
-      cout << "2. Print root value\n";
-      cout << "3. Print Tree\n";
-      cout << "4. Add node\n";
-      cout << "5. \n";
-      cout << "6. \n";
+      cout << "\n\t\tMENU \n\n";
+      cout << "-------------- CREATE --------------\n";
+      cout << "1. Create Root\n";
+      cout << "\n-------------- PRINT  --------------\n";
+      cout << "2. Print Root value\n";
+      cout << "3. Print PreOrder (VLR)\n";
+      cout << "4. Print InOrder (LVR)\n";
+      cout << "5. Print PostOrder (LRV)\n";
+      cout << "\n--------------- ADD ----------------\n";
+      cout << "6. Add Node\n";
+      cout << "\n-------------- REMOVE --------------\n";
       cout << "7. \n";
       cout << "8. \n";
       cout << "9. \n";
@@ -133,7 +187,9 @@ int main()
       cout << "11.  (=)\n";
       cout << "12.  (p)\n";
       cout << "13.  ([)\n";
-      cout << "14.  (])\n\n";
+      cout << "\n-------------- STOP --------------\n";
+      cout << "14. Stop Program (])\n\n";
+      cout << "-----------------------------------\n\n";
 
       choice = getch();
 
@@ -164,30 +220,41 @@ int main()
         {
           if(root)
           {
-            PrintTree(root);
+            cout << "Tree elements (VLR):\n";
+            PreOrder(root);
           }
           else cout << "Tree does not exists!\n";
           system("pause>nul");
           break;
         }
-        case num4: // add node
+        case num4:
         {
           if(root)
           {
-            AddNode(root);
+            cout << "Tree elements (LVR):\n";
+            InOrder(root);
           }
           else cout << "Tree does not exists!\n";
           break;
         }
         case num5:
         {
-
+          if(root)
+          {
+            cout << "Tree elements (LRV):\n";
+            PostOrder(root);
+          }
+          else cout << "Tree does not exists!\n";
           system("pause>nul");
           break;
         }
         case num6:
         {
-
+          if(root)
+          {
+            AddNode(root);
+          }
+          else cout << "Tree does not exists!\n";
           system("pause>nul");
           break;
         }
