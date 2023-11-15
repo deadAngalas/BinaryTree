@@ -1,4 +1,5 @@
 #include<iostream>
+#include<iomanip>
 #include<cstdlib>
 #include<conio.h>
 #define N 100
@@ -49,13 +50,13 @@ Node *CreateNode()
   return newNode;
 }
 
-void PrintTree(Node *cur) // LVR
+void PrintTree(Node *cur, int padding = 0) // RVL princips - 90 gradi
 {
   if(cur != NULL)
   {
-    PrintTree(cur->left);
-    cout << cur->data << " ";
-    PrintTree(cur->right);
+    PrintTree(cur->right, padding+=5);
+    cout << setw(padding) << "[" << cur->data << "]" << endl;
+    PrintTree(cur->left, padding);
   }
 }
 
@@ -125,14 +126,10 @@ Node *AddNode(Node *root)
   return 0;
 }
 
-Node *FindNode(Node *root)
+Node *FindNode(Node *root, int x)
 {
-  int x;
   Node *cur = new Node;
   cur = root;
-
-  cout << "Enter which Node need to find: ";
-  cin >> x;
 
   while((cur->data > x && cur->left != NULL) || (cur->data <= x && cur->right != NULL) && cur->data != x)
   {
@@ -150,9 +147,40 @@ Node *FindNode(Node *root)
   {
     cout << "\nSuccessfully Found! :)\n";
   }
-  else cout << "\nSorry! There is no your Node! :(\n";
+  else
+  {
+    cur = NULL;
+    cout << "\nSorry! There is no your Node! :(\n";
+  }
 
-  return root;
+  return cur;
+}
+
+Node *FindParent(Node *root, int x)
+{
+  Node *cur = new Node;
+  Node *parent;
+  cur = root;
+
+  while((cur->data > x && cur->left != NULL) || (cur->data <= x && cur->right != NULL) && cur->data != x)
+  {
+    parent = cur;
+    while(cur->data > x && cur->left != NULL && cur->data != x)
+    {
+      cur = cur->left;
+    }
+    while(cur->data <= x && cur->right != NULL && cur->data != x)
+    {
+      cur = cur->right;
+    }
+  }
+
+  if(root->data == x || cur->data != x)
+  {
+    parent = NULL;
+  }
+
+  return parent;
 }
 
 int NodesCount(Node *cur)
@@ -162,6 +190,52 @@ int NodesCount(Node *cur)
     return 1 + NodesCount(cur->left) + NodesCount(cur->right);
   }
   else return 0;
+}
+
+Node *SwapTree(Node *cur)
+{
+  Node *temp1 = NULL;
+  Node *temp2 = NULL;
+
+  if(cur != NULL)
+  {
+    temp1 = SwapTree(cur->left);
+    temp2 = SwapTree(cur->right);
+    cur->right = temp1;
+    cur->left = temp2;
+  }
+  return cur;
+}
+
+Node *RemoveNode(Node *root)
+{
+  Node *cur, *x, *y;
+  cur = root;
+
+  int value;
+  cout << "Enter which Node need to remove: ";
+  cin >> value;
+  x = FindNode(root, value);
+
+  if(x != NULL)
+  {
+    if(x->left == NULL && x->right == NULL)
+    {
+      // Node who has no children
+      y = FindParent(root, value);
+      if(y->left == x)
+      {
+        y->left = NULL;
+      }
+      else
+      {
+        y->right = NULL;
+      }
+      delete x;
+    }
+    cout << "\nNode was successfully removed!" << endl;
+  }
+  return root;
 }
 
 int main()
@@ -201,7 +275,7 @@ int main()
       cout << "9. Remove Node\n";
       cout << "\n--------- COUNT & TURNING ----------\n";
       cout << "10. Count How many Nodes (-)\n";
-      cout << "11. Tree Turning (=)\n";
+      cout << "11. Swap Tree (=)\n";
       cout << "\n-------------- STOP --------------\n";
       cout << "12. Stop Program (p)\n\n";
       cout << "-----------------------------------\n\n";
@@ -287,7 +361,10 @@ int main()
         {
           if(root)
           {
-            root = FindNode(root);
+            int x;
+            cout << "Enter which Node need to find: ";
+            cin >> x;
+            FindNode(root, x);
           }
           else cout << "Tree does not exists!\n";
           system("pause>nul");
@@ -295,7 +372,11 @@ int main()
         }
         case num9: // remove
         {
-
+          if(root)
+          {
+            root = RemoveNode(root);
+          }
+          else cout << "Tree does not exists!\n";
           system("pause>nul");
           break;
         }
@@ -310,9 +391,14 @@ int main()
           system("pause>nul");
           break;
         }
-        case num11: // turning
+        case num11: // swap
         {
-
+          if(root)
+          {
+            SwapTree(root);
+            cout << "Tree has been swapped!" << endl;
+          }
+          else cout << "Tree does not exists!\n";
           system("pause>nul");
           break;
         }
