@@ -164,13 +164,14 @@ Node *FindParent(Node *root, int x)
 
   while((cur->data > x && cur->left != NULL) || (cur->data <= x && cur->right != NULL) && cur->data != x)
   {
-    parent = cur;
     while(cur->data > x && cur->left != NULL && cur->data != x)
     {
+      parent = cur;
       cur = cur->left;
     }
     while(cur->data <= x && cur->right != NULL && cur->data != x)
     {
+      parent = cur;
       cur = cur->right;
     }
   }
@@ -209,7 +210,7 @@ Node *SwapTree(Node *cur)
 
 Node *RemoveNode(Node *root)
 {
-  Node *cur, *x, *y;
+  Node *cur, *x, *y, *temp;
   cur = root;
 
   int value;
@@ -219,18 +220,79 @@ Node *RemoveNode(Node *root)
 
   if(x != NULL)
   {
+    y = FindParent(root, value);
+
+    // Node who has no children
     if(x->left == NULL && x->right == NULL)
     {
-      // Node who has no children
-      y = FindParent(root, value);
+      if(y->left == x) y->left = NULL;
+      else y->right = NULL;
+      delete x;
+    }
+
+    // Node who has 1 child
+    if(x->left == NULL && x->right != NULL)
+    {
+      if(y->left == x) y->left = x->right;
+      else y->right = x->right;
+      x->right = NULL;
+      delete x;
+    }
+    if(x->left != NULL && x->right == NULL)
+    {
+      if(y->left == x) y->left = x->left;
+      else y->right = x->left;
+      x->left = NULL;
+      delete x;
+    }
+
+    // Node who has 2 children
+    if(x->left != NULL && x->right != NULL)
+    {
       if(y->left == x)
       {
-        y->left = NULL;
+        temp = x->left;
+        y->left = x->left;
+        while(temp->right != NULL)
+        temp = temp->right;
+        temp->right = x->right;
+        x->left = NULL;
+        x->right = NULL;
       }
       else
       {
-        y->right = NULL;
+        temp = x->right;
+        y->left = x->right;
+        while(temp->left != NULL)
+        temp = x->left;
+        temp->left = x->left;
+        x->left = NULL;
+        x->right = NULL;
       }
+      delete x;
+    }
+
+    // Node who is a root
+    if(root->data == x)
+    {
+      // root who has no children
+      if(x->left == NULL && x->right == NULL)
+      {
+        root = NULL;
+        delete x;
+      }
+      // root who has right child
+      if(x->left == NULL)
+      {
+        root = x->right;
+        delete x;
+      }
+      temp = x->left;
+      y = x->right;
+      root = temp;
+      while(temp->right != NULL)
+      temp = temp->right;
+      temp->right = y;
       delete x;
     }
     cout << "\nNode was successfully removed!" << endl;
@@ -318,7 +380,7 @@ int main()
         {
           if(root)
           {
-            cout << "Tree elements:\n";
+            cout << "Tree elements:\n\n";
             PrintTree(root);
           }
           else cout << "Tree does not exists!\n";
